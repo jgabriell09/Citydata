@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+/* Forzar control manual del modo oscuro */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Colores base */
+@theme {
+  --color-bg-light: var(--color-gray-100);
+  --color-bg-dark: var(--color-gray-950);
+  --color-text-light: var(--color-gray-800);
+  --color-text-dark: var(--color-gray-200);
+}
