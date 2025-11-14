@@ -3,10 +3,35 @@ import express from "express";
 import cors from "cors";
 
 const app = express();
+
+// =================== CABECERAS DE SEGURIDAD ===================
+
+// 1. Anti-clickjacking
+app.use((req, res, next) => {
+  res.setHeader("X-Frame-Options", "DENY");
+  next();
+});
+
+// 2. Evitar que el navegador adivine tipos MIME
+app.use((req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  next();
+});
+
+// 3. Bloquear acceso a archivos ocultos (.git, .hg, .svn, etc.)
+app.use((req, res, next) => {
+  const forbiddenPatterns = /^\/\./; // cualquier archivo que empiece con .
+  if (forbiddenPatterns.test(req.path)) {
+    return res.status(403).send("Access denied");
+  }
+  next();
+});
+
+// ===============================================================
+
 app.use(cors());
 
 const PORT = 4000;
-
 
 const sensors = [
   {
@@ -47,26 +72,22 @@ const sensors = [
   },
 ];
 
-
 const updateSensorData = () => {
   sensors.forEach((sensor) => {
     const randomValue =
-      sensor.min +
-      Math.random() * (sensor.max - sensor.min);
+      sensor.min + Math.random() * (sensor.max - sensor.min);
 
     const value = parseFloat(randomValue.toFixed(1));
     const timestamp = new Date().toISOString();
 
-    
     sensor.history.push({ timestamp, value });
+
     if (sensor.history.length > 30) sensor.history.shift();
   });
 };
 
-
 setInterval(updateSensorData, 5000);
-updateSensorData(); 
-
+updateSensorData();
 
 app.get("/api/sensors", (req, res) => {
   const current = sensors.map((s) => ({
@@ -76,6 +97,7 @@ app.get("/api/sensors", (req, res) => {
     unit: s.unit,
     value: s.history.at(-1)?.value || 0,
   }));
+
   res.json(current);
 });
 
