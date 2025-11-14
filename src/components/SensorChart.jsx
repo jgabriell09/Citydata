@@ -13,7 +13,8 @@ ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip)
 
 export default function SensorChart({ sensor }) {
   const [history, setHistory] = useState([]);
-  const API_URL = `http://localhost:4000/api/sensors/${sensor.id}/history`;
+  const API_URL = `http://100.30.80.116:4000/api/sensors/${sensor.id}/history`;
+
 
   // 🧠 Obtiene historial real del backend
   const fetchHistory = async () => {
