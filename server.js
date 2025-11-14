@@ -132,9 +132,9 @@ app.get("/api/sensors/:id/history", (req, res) => {
 });
 
 // ===============================================================
-// 5. Redirigir cualquier ruta al frontend (React router)
+// 5. Redirigir cualquier ruta NO API al frontend
 // ===============================================================
-app.get("*", (req, res) => {
+app.get(/^(?!\/api).*/, (req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
