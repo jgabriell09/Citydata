@@ -1,34 +1,49 @@
 // server.js
 import express from "express";
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const app = express();
 
-// =================== CABECERAS DE SEGURIDAD ===================
+// ===============================================================
+// 1. Seguridad mínima sin romper el frontend
+// ===============================================================
 
-// 1. Anti-clickjacking
+// Evitar iframes maliciosos
 app.use((req, res, next) => {
   res.setHeader("X-Frame-Options", "DENY");
   next();
 });
 
-// 2. Evitar que el navegador adivine tipos MIME
+// Evitar que el navegador adivine tipos MIME
 app.use((req, res, next) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
   next();
 });
 
-// 3. Bloquear acceso a archivos ocultos (.git, .hg, .svn, etc.)
+// Bloquear archivos ocultos (.git, .hg, .svn, etc.)
 app.use((req, res, next) => {
-  const forbiddenPatterns = /^\/\./; // cualquier archivo que empiece con .
-  if (forbiddenPatterns.test(req.path)) {
+  if (req.path.startsWith("/.")) {
     return res.status(403).send("Access denied");
   }
   next();
 });
 
 // ===============================================================
+// 2. Configuración de __dirname para ES Modules
+// ===============================================================
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
+// ===============================================================
+// 3. Servir FRONTEND desde dist/
+// ===============================================================
+app.use(express.static(path.join(__dirname, "dist")));
+
+// ===============================================================
+// 4. API BACKEND
+// ===============================================================
 app.use(cors());
 
 const PORT = 4000;
@@ -116,6 +131,16 @@ app.get("/api/sensors/:id/history", (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Servidor CityData con historial en http://localhost:${PORT}`);
+// ===============================================================
+// 5. Redirigir cualquier ruta al frontend (React router)
+// ===============================================================
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
+
+// ===============================================================
+// 6. Iniciar servidor
+// ===============================================================
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Servidor CityData corriendo en http://<TU-IP>:${PORT}`);
 });
