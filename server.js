@@ -10,7 +10,25 @@ const app = express();
 // 1. Seguridad mínima sin romper el frontend
 // ===============================================================
 
+// Evitar iframes maliciosos
+app.use((req, res, next) => {
+  res.setHeader("X-Frame-Options", "DENY");
+  next();
+});
 
+// Evitar que el navegador adivine tipos MIME
+app.use((req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  next();
+});
+
+// Bloquear archivos ocultos (.git, .hg, .svn, etc.)
+app.use((req, res, next) => {
+  if (req.path.startsWith("/.")) {
+    return res.status(403).send("Access denied");
+  }
+  next();
+});
 
 // ===============================================================
 // 2. Configuración de __dirname para ES Modules
