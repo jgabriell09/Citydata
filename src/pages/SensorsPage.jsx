@@ -10,7 +10,7 @@ export default function SensorsPage() {
 
   const generateSensorData = (prev = []) => {
     const getPrev = (i, fallback) => {
-      const v = parseFloat(prev[i]?.lastReading?.value);
+      const v = Number.parseFloat(prev[i]?.lastReading?.value);
       return isNaN(v) ? fallback : v;
     };
 

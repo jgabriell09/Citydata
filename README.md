@@ -1,5 +1,24 @@
 # React + Vite
 
+## Servidor Citydata y CORS
+
+Ejecuta `npm run server` para iniciar la API en el puerto 4000 y `npm run dev`
+para iniciar el frontend. CORS permite por defecto únicamente
+`http://localhost:5173` y `http://127.0.0.1:5173`.
+
+Para otro puerto o un despliegue, configura `CORS_ORIGINS` antes de iniciar el
+servidor con los orígenes exactos separados por comas, sin barra final ni rutas.
+Ejemplo en PowerShell:
+
+```powershell
+$env:CORS_ORIGINS = "https://citydata.example.com"
+npm run server
+```
+
+Esta variable reemplaza la lista predeterminada. No admite comodines. CORS
+controla qué orígenes pueden leer respuestas desde el navegador; no sustituye
+la autenticación ni impide solicitudes desde otros clientes.
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:

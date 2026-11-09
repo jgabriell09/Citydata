@@ -2,7 +2,7 @@ import SensorChart from "./SensorChart";
 import { motion } from "framer-motion";
 
 export default function SensorCard({ sensor, onClick }) {
-  const value = parseFloat(sensor.lastReading?.value);
+  const value = Number.parseFloat(sensor.lastReading?.value);
   const min = sensor.min || 0;
   const max = sensor.max || 100;
 

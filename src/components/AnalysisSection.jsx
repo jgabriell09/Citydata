@@ -3,7 +3,7 @@ export default function AnalysisSection({ sensors }) {
 
   // Calcular estadísticas
   const stats = sensors.map((s) => {
-    const val = parseFloat(s.lastReading?.value);
+    const val = Number.parseFloat(s.lastReading?.value);
     return {
       name: s.name,
       type: s.type,

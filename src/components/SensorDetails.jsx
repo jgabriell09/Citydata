@@ -15,7 +15,7 @@ export default function SensorDetails({ sensor, onClose }) {
   const color = colorMap[sensor.type] || "#6b7280";
 
   // Calcular métricas simples del historial
-  const values = sensor.history?.map((r) => parseFloat(r.value)) || [];
+  const values = sensor.history?.map((r) => Number.parseFloat(r.value)) || [];
   const avg = values.length ? (values.reduce((a, b) => a + b, 0) / values.length).toFixed(1) : "-";
   const min = values.length ? Math.min(...values).toFixed(1) : "-";
   const max = values.length ? Math.max(...values).toFixed(1) : "-";
@@ -29,7 +29,7 @@ export default function SensorDetails({ sensor, onClose }) {
   };
   const [minRange, maxRange] = ranges[sensor.type] || [0, 100];
 
-  const currentValue = parseFloat(sensor.lastReading?.value || 0);
+  const currentValue = Number.parseFloat(sensor.lastReading?.value || 0);
 
   // Determinar estado
   let estado = "Normal";

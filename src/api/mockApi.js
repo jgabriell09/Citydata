@@ -45,7 +45,7 @@ export function getReadings(sensorId, points = 30) {
     const time = new Date(now - i * 5000); // cada 5s
     readings.push({
       timestamp: time.toISOString(),
-      value: parseFloat(generateReading(sensor.type)),
+      value: Number.parseFloat(generateReading(sensor.type)),
     });
   }
   return readings;
