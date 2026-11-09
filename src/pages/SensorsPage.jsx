@@ -11,7 +11,7 @@ export default function SensorsPage() {
   const generateSensorData = (prev = []) => {
     const getPrev = (i, fallback) => {
       const v = Number.parseFloat(prev[i]?.lastReading?.value);
-      return isNaN(v) ? fallback : v;
+      return Number.isNaN(v) ? fallback : v;
     };
 
     const makeReading = (val) => ({
@@ -132,9 +132,11 @@ export default function SensorsPage() {
         {/* Tarjetas */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {sensors.map((sensor) => (
-            <div key={sensor.id} onClick={() => setSelectedSensor(sensor)}>
-              <SensorCard sensor={sensor} />
-            </div>
+            <SensorCard
+              key={sensor.id}
+              sensor={sensor}
+              onClick={() => setSelectedSensor(sensor)}
+            />
           ))}
         </div>
 

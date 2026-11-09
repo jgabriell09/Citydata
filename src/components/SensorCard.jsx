@@ -39,14 +39,19 @@ export default function SensorCard({ sensor, onClick }) {
 
   return (
     <motion.div
-      onClick={onClick}
       whileHover={{ scale: 1.05 }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className={`rounded-2xl border ${borderColor} shadow-sm p-5 cursor-pointer ${bgColor}
+      className={`relative rounded-2xl border ${borderColor} shadow-sm p-5 cursor-pointer ${bgColor}
         transition-all dark:shadow-[0_0_15px_rgba(0,0,0,0.3)]`}
     >
+      <button
+        type="button"
+        onClick={onClick}
+        aria-label={`Ver detalles de ${sensor.name}`}
+        className="absolute inset-0 z-10 rounded-2xl cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-600"
+      />
       <div className="flex justify-between items-start mb-2">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
           {sensor.name}

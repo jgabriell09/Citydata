@@ -13,24 +13,31 @@ ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip)
 
 export default function SensorChart({ sensor }) {
   const [history, setHistory] = useState([]);
-  const API_URL = `http://localhost:4000/api/sensors/${sensor.id}/history`;
 
   // 🧠 Obtiene historial real del backend
-  const fetchHistory = async () => {
-    try {
-      const res = await fetch(API_URL);
-      const data = await res.json();
-      setHistory(data.history || []);
-    } catch (err) {
+  useEffect(() => {
+    const controller = new AbortController();
+    const fetchHistory = async () => {
+      try {
+        const res = await fetch(`http://localhost:4000/api/sensors/${sensor.id}/history`, {
+          signal: controller.signal,
+        });
+        if (!res.ok) throw new Error(`Error HTTP ${res.status}`);
+        const data = await res.json();
+        if (!controller.signal.aborted) setHistory(data.history || []);
+      } catch (err) {
+      if (controller.signal.aborted) return;
       console.error("⚠️ Error al obtener historial:", err);
     }
-  };
+    };
 
-  // 🔄 Actualiza el historial cada 5 segundos
-  useEffect(() => {
-    fetchHistory(); // primera carga
-    const interval = setInterval(fetchHistory, 5000);
-    return () => clearInterval(interval);
+    // 🔄 Actualiza el historial cada 5 segundos
+    void fetchHistory(); // primera carga; los errores se manejan internamente
+    const interval = setInterval(() => { void fetchHistory(); }, 5000);
+    return () => {
+      clearInterval(interval);
+      controller.abort();
+    };
   }, [sensor.id]);
 
   // 🎨 Colores por tipo de sensor
