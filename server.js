@@ -4,6 +4,7 @@ import cors from "cors";
 import process from "node:process";
 
 const app = express();
+app.disable("x-powered-by");
 const allowedOrigins = (
   process.env.CORS_ORIGINS ?? "http://localhost:5173,http://127.0.0.1:5173"
 ).split(",").map((origin) => origin.trim()).filter(Boolean);
